@@ -16,12 +16,19 @@ class MaxHoursConstraint(Constraint):
 
     def apply(self, backend: BackendProtocol, inputs: SchedulingInputs, slots: Iterable[TimeSlot]) -> None:
         slots_list = list(slots)
+        minutes_per_hour = 60
         for employee in inputs.employees:
             expr = []
             for slot in slots_list:
+                duration_minutes = int(round(slot.duration_hours * minutes_per_hour))
+                if duration_minutes == 0:
+                    continue
                 var = backend.get_variable(employee.id, slot.index)
-                expr.append((var, slot.duration_hours))
-            backend.add_constraint(expr, "<=", employee.max_hours_per_week, name=f"max_hours_{employee.id}")
+                expr.append((var, duration_minutes))
+            if not expr:
+                continue
+            max_minutes = int(round(employee.max_hours_per_week * minutes_per_hour))
+            backend.add_constraint(expr, "<=", max_minutes, name=f"max_hours_{employee.id}")
 
 
 class DailyLimitConstraint(Constraint):
