@@ -87,9 +87,11 @@ class SolverOrchestrator:
         backend: CPSatBackend,
         solver_result,
     ) -> ScheduleSolution:
-        status = self._translate_status(solver_result.status)
+        raw_status = solver_result.status
+        status = self._translate_status(raw_status)
         assignments: List[AssignmentDecision] = []
         solver = solver_result.solver
+        has_solution = raw_status in (cp_model.OPTIMAL, cp_model.FEASIBLE)
         for employee in inputs.employees:
             for slot in slots:
                 var = backend.get_variable(employee.id, slot.index)
@@ -99,10 +101,13 @@ class SolverOrchestrator:
                         slot_index=slot.index,
                         start=slot.start,
                         end=slot.end,
-                        is_assigned=bool(solver.Value(var)),
+                        is_assigned=bool(solver.Value(var)) if has_solution else False,
                     )
                 )
-        objective_value = solver.ObjectiveValue() if backend.has_objective() else None
+        if has_solution and backend.has_objective():
+            objective_value = solver.ObjectiveValue()
+        else:
+            objective_value = None
         return ScheduleSolution(status=status, objective_value=objective_value, assignments=assignments)
 
     @staticmethod
