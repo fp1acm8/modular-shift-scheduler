@@ -3,45 +3,32 @@ requires = ["setuptools>=67", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "modular-shift-scheduler"
+name = "scheduler"
 version = "0.1.0"
-description = "A modular, constraint-based scheduling engine for workforce planning"
+description = "Modular shift scheduling engine"
+authors = [{name = "Scheduling Team"}]
 readme = "README.md"
-authors = [{name = "Example Maintainer", email = "maintainer@example.com"}]
-license = {text = "MIT"}
+license = {file = "LICENSE"}
 requires-python = ">=3.10"
-dependencies = []
-
-[project.scripts]
-modular-shift-scheduler = "modular_shift_scheduler.cli:main"
+dependencies = [
+    "pydantic>=2.6",
+    "typer[all]>=0.12",
+    "pandas>=2.2",
+    "openpyxl>=3.1",
+    "numpy>=1.26",
+    "ortools>=9.8",
+    "rich>=13.7"
+]
 
 [project.optional-dependencies]
 dev = [
-    "black>=24.4",
-    "isort>=5.13",
-    "mypy>=1.10",
-    "pytest>=8.2",
-    "ruff>=0.5",
+    "black>=24.3",
+    "ruff>=0.4",
+    "mypy>=1.9"
 ]
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "-ra"
+[project.scripts]
+scheduler = "scheduler.cli:app"
 
-[tool.black]
-line-length = 100
-target-version = ["py310"]
-
-[tool.isort]
-profile = "black"
-line_length = 100
-
-[tool.ruff]
-line-length = 100
-extend-select = ["I"]
-
-[tool.mypy]
-python_version = "3.10"
-strict = true
-packages = ["modular_shift_scheduler"]
-
+[tool.setuptools.packages.find]
+where = ["src"]
