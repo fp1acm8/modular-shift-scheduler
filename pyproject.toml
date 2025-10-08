@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=67", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "modular-shift-scheduler"
+version = "0.1.0"
+description = "A modular, constraint-based scheduling engine for workforce planning"
+readme = "README.md"
+authors = [{name = "Example Maintainer", email = "maintainer@example.com"}]
+license = {text = "MIT"}
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+modular-shift-scheduler = "modular_shift_scheduler.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "black>=24.4",
+    "isort>=5.13",
+    "mypy>=1.10",
+    "pytest>=8.2",
+    "ruff>=0.5",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.ruff]
+line-length = 100
+extend-select = ["I"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+packages = ["modular_shift_scheduler"]
+
